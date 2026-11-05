@@ -7,3 +7,4 @@ instance/
 *.sqlite3
 *.db
 .DS_Store
+app_sqlite_backup.py
