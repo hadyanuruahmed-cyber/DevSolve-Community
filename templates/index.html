@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevSolve Community is a student-led technology and problem-solving club dedicated to identifying school problems and developing practical solutions.">
+    <title>DevSolve Community | Think. Solve. Improve.</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container navbar">
+            <a class="brand" href="#home" aria-label="DevSolve Community home">
+                <img src="{{ url_for('static', filename='images/devsolve-logo.jpg') }}"
+                     alt="DevSolve Community logo" class="club-logo">
+                <span>DevSolve <strong>Community</strong></span>
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">☰</button>
+
+            <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+                <a href="#home">Home</a>
+                <a href="#about">About Us</a>
+                <a href="#projects">Projects</a>
+                <a href="#news">News</a>
+                <a href="#feedback">Share Ideas</a>
+                <a href="#report">Report a Problem</a>
+                <a href="#join" class="nav-apply">Join Us</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <p class="eyebrow">STUDENT-LED • SOLUTION-FOCUSED</p>
+                    <h1>We identify problems.<br><span>We build solutions.</span></h1>
+                    <p class="hero-description">
+                        Welcome to DevSolve Community, a student-led technology
+                        and problem-solving club. We turn challenges in our school
+                        into opportunities to learn, innovate, and make a difference.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="#projects" class="button button-primary">Explore Our Projects</a>
+                        <a href="#report" class="button button-secondary">Report a Problem</a>
+                    </div>
+
+                    <div class="hero-note">
+                        <span class="status-dot"></span>
+                        Think creatively. Solve practically. Improve together.
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="visual-card">
+                        <div class="visual-top">
+                            <span class="visual-dot"></span>
+                            <span class="visual-dot"></span>
+                            <span class="visual-dot"></span>
+                            <span class="visual-label">OUR MISSION</span>
+                        </div>
+
+                        <div class="visual-icon">💡</div>
+                        <h2>Every problem is an opportunity.</h2>
+                        <p>Observe. Understand. Create. Improve.</p>
+
+                        <div class="visual-steps">
+                            <div><span>01</span> Identify a problem</div>
+                            <div><span>02</span> Design a solution</div>
+                            <div><span>03</span> Make an impact</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="school-section">
+            <div class="container school-inner">
+                <div class="school-logo-wrap">
+                    <img src="{{ url_for('static', filename='images/school-logo.jpg') }}"
+                         alt="Our school's logo" class="school-logo">
+                </div>
+                <div>
+                    <p class="eyebrow">OUR SCHOOL COMMUNITY</p>
+                    <h2>Working together for a better school.</h2>
+                    <p>
+                        DevSolve Community is committed to helping our school
+                        community identify challenges and explore practical solutions.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="about">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">WHO WE ARE & WHY WE STARTED</p>
+                <h2>Students with a purpose. Problem-solvers by choice.</h2>
+                <p>
+                    DevSolve Community is a student-led technology and
+                    problem-solving club founded by Hadya Nuru and
+                    Yeabsira Biruh, two Grade 11 Natural Science students.
+                    We believe that students should not only learn about
+                    the world around them, but also take part in improving it.
+                </p>
+                <p>
+                    We started this club because we believe that many
+                    challenges in our school deserve attention, creative
+                    thinking, and practical solutions. We wanted to create
+                    a space where students can share ideas, work as a team,
+                    learn new skills, and turn problems into opportunities
+                    for positive change.
+                </p>
+            </div>
+
+            <div class="info-grid">
+                <article class="info-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Our Mission</h3>
+                    <p>
+                        To identify real problems in our school, listen to
+                        the people affected by them, and work collaboratively
+                        to develop practical, creative, and affordable
+                        solutions using technology, critical thinking,
+                        and teamwork.
+                    </p>
+                </article>
+
+                <article class="info-card">
+                    <div class="card-icon">🌍</div>
+                    <h3>Our Vision</h3>
+                    <p>
+                        To build a school community where students become
+                        active problem-solvers, use their knowledge to
+                        serve others, and create lasting positive change.
+                        We hope DevSolve will inspire more students to
+                        believe that meaningful change can begin with them.
+                    </p>
+                </article>
+
+                <article class="info-card">
+                    <div class="card-icon">💡</div>
+                    <h3>Our Motive</h3>
+                    <p>
+                        We do not want to be students who only recognize
+                        problems and wait for someone else to solve them.
+                        We want to ask questions, understand challenges,
+                        explore ideas, and take action. We believe that
+                        even a small solution can make a real difference
+                        when it addresses a genuine need.
+                    </p>
+                </article>
+            </div>
+
+            <div class="founders-section">
+                <div class="section-heading">
+                    <p class="eyebrow">THE STUDENTS BEHIND THE IDEA</p>
+                    <h2>Meet Our Founders</h2>
+                    <p>
+                        DevSolve Community began with two Grade 11
+                        Natural Science students who share a vision
+                        of making their school a better place.
+                    </p>
+                </div>
+
+                <div class="founders-grid">
+                    <article class="founder-card">
+                        <div class="founder-avatar" aria-hidden="true">H</div>
+                        <h3>Hadya Nuru</h3>
+                        <p class="founder-role">Co-Founder · Grade 11 NS</p>
+                        <p>
+                            Believes that students can create positive
+                            change by recognizing real challenges,
+                            thinking creatively, and taking initiative
+                            to find practical solutions.
+                        </p>
+                    </article>
+
+                    <article class="founder-card">
+                        <div class="founder-avatar" aria-hidden="true">Y</div>
+                        <h3>Yeabsira Biruh</h3>
+                        <p class="founder-role">Co-Founder · Grade 11 NS</p>
+                        <p>
+                            Shares the goal of bringing students together
+                            to identify school problems, exchange ideas,
+                            learn collaboratively, and turn promising
+                            ideas into meaningful action.
+                        </p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="values-section">
+                <div class="section-heading">
+                    <p class="eyebrow">WHAT GUIDES OUR WORK</p>
+                    <h2>Our Values</h2>
+                </div>
+
+                <div class="values-list">
+                    <span>🤝 Teamwork</span>
+                    <span>💭 Critical Thinking</span>
+                    <span>💡 Creativity</span>
+                    <span>❤️ Responsibility</span>
+                    <span>📚 Continuous Learning</span>
+                    <span>🌱 Positive Change</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <section class="section section-soft" id="projects">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">FROM PROBLEMS TO PROGRESS</p>
+                <h2>Our Projects</h2>
+                <p>
+                    We identify real challenges in our school and work
+                    together to explore practical, affordable solutions.
+                    Every project begins with understanding a problem.
+                </p>
+            </div>
+
+            {% if projects %}
+    <div class="projects-grid">
+        {% for project in projects %}
+            <article class="project-card">
+                <div class="project-card-content">
+                    <p class="eyebrow">DEVSOLVE COMMUNITY PROJECT</p>
+
+                    <h3>{{ project.title }}</h3>
+
+                    <p>{{ project.description }}</p>
+
+                    <span class="project-status">
+                        {{ project.status }}
+                    </span>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-projects">
+        <div class="empty-projects-icon">💡</div>
+
+        <h3>Our First Project Is on the Way!</h3>
+
+        <p>
+            We are preparing to identify a school problem and
+            develop our first project. We want our work to address
+            real needs and make a meaningful difference in our
+            school community.
+        </p>
+
+        <p>
+            Once our first project officially begins, we will
+            share its goals, progress, and results here.
+        </p>
+    </div>
+{% endif %}
+        </div>
+    </section>
+
+       <section class="section" id="news">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">STAY CONNECTED</p>
+            <h2>News &amp; Updates</h2>
+            <p>
+                Follow our activities, announcements, achievements,
+                and opportunities to participate.
+            </p>
+        </div>
+
+        {% if news_items %}
+            <div class="news-list">
+                {% for news in news_items %}
+                    <article class="news-card">
+                        <div class="news-card-content">
+                            <p class="eyebrow">DEVSOLVE COMMUNITY NEWS</p>
+
+                            <h3>{{ news.title }}</h3>
+
+                            <p class="news-date">
+                                Published: {{ news.created_at }}
+                            </p>
+
+                            <div class="news-content">
+                                {{ news.content }}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📰</div>
+                <h3>Our story is beginning.</h3>
+                <p>
+                    Club announcements and project updates will appear here
+                    as they become available. Stay connected!
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+    
+    
+        <section class="section section-soft" id="feedback">
+
+            {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <p class="flash-message">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+            <div class="container action-layout">
+                <div class="action-icon">💬</div>
+                <div class="action-content">
+                    <p class="eyebrow">YOUR VOICE MATTERS</p>
+                    <h2>Share your feedback and ideas.</h2>
+                    <p>
+                        Have a suggestion, an idea for a project, or feedback
+                        about DevSolve's work? We want to hear from you.
+                    </p>
+                    <p class="small-note">
+                        Submissions will be reviewed privately by club administrators.
+                        Respectful criticism and constructive suggestions are welcome.
+                    </p>
+                    <form action="{{ url_for('submit_feedback') }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <textarea
+        name="message"
+        placeholder="Share your feedback or suggestions with us..."
+        rows="5"
+        minlength="10"
+        maxlength="1000"
+        required
+    ></textarea>
+
+    <button type="submit" class="button button-primary">
+        Submit Feedback
+    </button>
+</form>
+                </div>
+            </div>
+        </section>
+        <section class="section" id="report">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">IDENTIFY THE PROBLEM</p>
+            <h2>Report a School Problem</h2>
+            <p>
+                Have you noticed a problem in our school?
+                Tell DevSolve Community so we can explore
+                practical solutions together.
+            </p>
+        </div>
+
+        <div class="action-layout">
+            <div>
+                <form action="{{ url_for('submit_problem') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    
+
+                    <label for="problem-description">Tell us about the problem</label>
+                    <textarea
+                        id="problem-description"
+                        name="description"
+                        placeholder="Explain what the problem is and how it affects students..."
+                        rows="5"
+                        minlength="10"
+                        maxlength="1000"
+                        required
+                    ></textarea>
+
+                    <button type="submit" class="button button-primary">
+                        Submit Problem
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section class="section" id="report">
+            <div class="container report-box">
+                <div class="report-content">
+                    <p class="eyebrow">HELP US FIND SOLUTIONS</p>
+                    <h2>Notice a problem in our school?</h2>
+                    <p>
+                        Tell us about a challenge affecting students, teachers,
+                        learning, or the school environment. You do not need to
+                        know the solution—we can investigate the problem together.
+                    </p>
+                    <ul class="report-points">
+                        <li>Describe the problem clearly.</li>
+                        <li>Explain who is affected.</li>
+                        <li>Suggest a solution if you have an idea.</li>
+                    </ul>
+                    <p class="small-note">
+                        Reports will be private by default. Administrators will
+                        review them before deciding whether to develop or publish
+                        an approved project.
+                    </p>
+                    <a href="#report" class="button button-light">
+                        Report a School Problem
+                    </a>
+                </div>
+                <div class="report-decoration" aria-hidden="true">
+                    <div class="decoration-circle">🛠️</div>
+                    <div class="decoration-caption">See a problem.<br>Start a solution.</div>
+                </div>
+            </div>
+        </section>
+
+       <section class="join-section" id="join">
+    <div class="container join-inner">
+        <p class="eyebrow">BE PART OF THE CHANGE</p>
+        <h2>Do you want to solve real problems?</h2>
+        <p>
+            Join a community of students who want to think critically,
+            learn together, and improve school life.
+        </p>
+        {% if applications_available and application_deadline %}
+<div class="application-announcement">
+    <strong>📢 Membership Applications Are Open!</strong>
+    <p>
+        Submit your application before the deadline.
+    </p>
+    <p>
+        <strong>Application Deadline:</strong>
+        {{ application_deadline }}
+    </p>
+</div>
+{% endif %}
+
+        {% if applications_available %}
+
+        <form action="{{ url_for('submit_application') }}"
+              method="POST" class="application-form">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label for="full_name">Full Name *</label>
+            <input type="text" id="full_name" name="full_name"
+                   required minlength="5" maxlength="100"
+                   placeholder="Example: Abebe Kebede">
+
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone"
+                   required maxlength="13"
+                   placeholder="0912345678">
+            <small>Use an Ethiopian mobile number starting with 09, 07, +2519 or +2517.</small>
+
+            <label for="grade_section">Grade and Section *</label>
+            <select id="grade_section" name="grade_section" required>
+                <option value="">Select your grade</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+            </select>
+
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email"
+                   maxlength="254" required
+                   placeholder="example@email.com">
+
+            <div class="role-selection">
+                <h3>Which role would you like to take? *</h3>
+                <p>Please select only ONE role that best describes your interests.</p>
+
+                <label class="role-option">
+                    <input type="radio" name="role"
+                           value="Technical Builder / Coder" required>
+                    <span>
+                        <strong>💻 Technical Builder / Coder</strong>
+                        <small>
+                            I am interested in computers, coding, and technology.
+                            I want to help build digital tools and technical solutions
+                            that address real problems.
+                        </small>
+                    </span>
+                </label>
+
+                <label class="role-option">
+                    <input type="radio" name="role"
+                           value="Problem Identifier / Problem Solver" required>
+                    <span>
+                        <strong>🧠 Problem Identifier / Problem Solver</strong>
+                        <small>
+                            I enjoy identifying problems, understanding their causes,
+                            and finding practical solutions. I also want to develop
+                            my problem-solving skills.
+                        </small>
+                    </span>
+                </label>
+            </div>
+
+            <label for="role_reason">Why did you choose this role? *</label>
+            <textarea id="role_reason" name="role_reason"
+                      minlength="20" maxlength="300" required
+                      placeholder="Briefly explain why this role interests you..."></textarea>
+            <small>Please write between 20 and 300 characters.</small>
+
+            <label for="motivation">Why do you want to join DevSolve? *</label>
+            <textarea id="motivation" name="motivation"
+                      minlength="50" maxlength="1000" required
+                      placeholder="Explain your interest, what you hope to contribute, and how you would help solve problems in our school."></textarea>
+            <small>Please write between 50 and 1000 characters.</small>
+
+            <div class="application-warning">
+                <strong>Important Notice</strong>
+                <p>
+                    Please make sure all the information you provide is accurate.
+                    Incorrect or misleading information may affect your application.
+                </p>
+                <p>
+                    After submitting, please check your email within one week
+                    for an update about your application.
+                </p>
+            </div>
+
+            <button type="submit" class="button button-light">
+                Submit Application
+            </button>
+        </form>
+
+        {% else %}
+
+        <div class="application-closed">
+            <h3>Membership Applications Are Currently Closed</h3>
+            <p>
+                Thank you for your interest in joining DevSolve Community.
+                We are not accepting applications at the moment.
+                Please check again when the next application period opens.
+            </p>
+
+            {% if application_deadline %}
+            <p>
+                <strong>Application deadline:</strong>
+                {{ application_deadline }}
+            </p>
+            {% endif %}
+        </div>
+
+        {% endif %}
+    </div>
+</section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-brand">
+                <img src="{{ url_for('static', filename='images/devsolve-logo.jpg') }}"
+                     alt="DevSolve Community logo" class="footer-logo">
+                <div>
+                    <h3>DevSolve Community</h3>
+                    <p>Think. Solve. Improve.</p>
+                </div>
+            </div>
+
+            <div class="footer-school">
+                <img src="{{ url_for('static', filename='images/school-logo.jpg') }}"
+                     alt="Our school's logo" class="footer-school-logo">
+                <span>Working together for our school community.</span>
+            </div>
+
+            <div class="footer-admin">
+                <a href="/admin/login">Administrator Login</a>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>&copy; <span id="currentYear"></span> DevSolve Community. Built to make a difference.</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.getElementById("navLinks");
+
+        menuToggle.addEventListener("click", function () {
+            const isOpen = navLinks.classList.toggle("nav-open");
+            menuToggle.setAttribute("aria-expanded", isOpen);
+            menuToggle.setAttribute(
+                "aria-label",
+                isOpen ? "Close navigation menu" : "Open navigation menu"
+            );
+            menuToggle.textContent = isOpen ? "✕" : "☰";
+        });
+
+        navLinks.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("nav-open");
+                menuToggle.setAttribute("aria-expanded", "false");
+                menuToggle.setAttribute("aria-label", "Open navigation menu");
+                menuToggle.textContent = "☰";
+            });
+        });
+
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+    </script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+

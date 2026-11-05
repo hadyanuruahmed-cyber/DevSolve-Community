@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | DevSolve</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #0b2540;
+            color: white;
+            padding: 30px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar h2 {
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .sidebar p {
+            color: #b6c7d8;
+            font-size: 13px;
+        }
+
+        .sidebar nav {
+            margin-top: 45px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav a:hover {
+            background: #17466e;
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            color: #0b2540;
+        }
+
+        .logout {
+            background: #dc2626;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .welcome {
+            background: linear-gradient(120deg, #075985, #0284c7);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            line-height: 1.6;
+            color: #e0f2fe;
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            color: #0b2540;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 13px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #075985;
+        }
+
+        .coming-soon {
+            margin-top: 35px;
+            background: white;
+            padding: 25px;
+            border-radius: 13px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .sidebar nav {
+                margin-top: 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 22px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+        }
+        /* =========================================
+   NEWS & PROJECTS MANAGEMENT
+========================================= */
+
+#news,
+#projects {
+    background: #f8fafc;
+    border: 1px solid #dbe5f0;
+    border-radius: 18px;
+    padding: 30px;
+    margin-top: 35px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.04);
+}
+
+#news > h2,
+#projects > h2 {
+    color: #0b2540;
+    font-size: 25px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #dbeafe;
+}
+
+#news > h3,
+#projects > h3 {
+    color: #075985;
+    font-size: 18px;
+    margin: 30px 0 18px;
+}
+
+/* Individual management cards */
+
+#news .card,
+#projects .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+#news .card:hover,
+#projects .card:hover {
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.09);
+    transform: translateY(-2px);
+}
+
+#news .card h3,
+#projects .card h3 {
+    color: #0b2540;
+    font-size: 18px;
+    margin-bottom: 18px;
+}
+
+/* Publication and project status */
+
+#news .card > p,
+#projects .card > p {
+    display: inline-block;
+    background: #eaf3ff;
+    color: #075985;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 8px 15px 0;
+}
+
+/* Form labels */
+
+#news label,
+#projects label {
+    display: block;
+    color: #334155;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 16px 0 8px;
+}
+
+/* Text fields */
+
+#news input:not([type="hidden"]),
+#news textarea,
+#projects input:not([type="hidden"]),
+#projects textarea,
+#projects select {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #1e293b;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#news textarea,
+#projects textarea {
+    resize: vertical;
+    line-height: 1.6;
+}
+
+#news input:focus,
+#news textarea:focus,
+#projects input:focus,
+#projects textarea:focus,
+#projects select:focus {
+    outline: none;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+}
+
+/* Buttons */
+
+#news button,
+#projects button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#news button:hover,
+#projects button:hover {
+    transform: translateY(-1px);
+}
+
+/* Create and save buttons */
+
+#news .card > form:first-of-type button,
+#projects .card > form:first-of-type button {
+    background: #075985;
+    color: white;
+}
+
+#news .card > form:first-of-type button:hover,
+#projects .card > form:first-of-type button:hover {
+    background: #0369a1;
+}
+
+/* Publish / Unpublish buttons */
+
+#news form[action*="toggle_news_publication"] button,
+#projects form[action*="toggle_project_publication"] button {
+    background: #dbeafe;
+    color: #1d4ed8;
+    margin-top: 12px;
+}
+
+#news form[action*="toggle_news_publication"] button:hover,
+#projects form[action*="toggle_project_publication"] button:hover {
+    background: #bfdbfe;
+}
+
+/* Delete buttons */
+
+#news form[action*="delete_news"] button,
+#projects form[action*="delete_project"] button {
+    background: #fee2e2;
+    color: #b91c1c;
+    margin-top: 12px;
+}
+
+#news form[action*="delete_news"] button:hover,
+#projects form[action*="delete_project"] button:hover {
+    background: #fecaca;
+}
+
+/* Space between action forms */
+
+#news .card form,
+#projects .card form {
+    margin-top: 12px;
+}
+
+/* Mobile layout */
+
+@media (max-width: 600px) {
+    #news,
+    #projects {
+        padding: 18px;
+    }
+
+    #news .card,
+    #projects .card {
+        padding: 18px;
+    }
+
+    #news > h2,
+    #projects > h2 {
+        font-size: 21px;
+    }
+
+    #news button,
+    #projects button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <h2>DevSolve</h2>
+        <p>Community Administration</p>
+
+        <nav>
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="#feedback">Student Ideas</a>
+            <a href="#problems">School Problems</a>
+            <a href="#news">News Management</a>
+            <a href="#projects">Projects Management</a>
+            <a href="#applications">Membership Applications</a>
+            <a href="{{ url_for('admin_logout') }}">Sign Out</a>
+        </nav>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <h1>Admin Dashboard</h1>
+
+            <a href="{{ url_for('admin_logout') }}" class="logout">
+                Sign Out
+            </a>
+        </header>
+
+        <section class="welcome">
+            <h2>Welcome, {{ session.get('admin_name') }}!</h2>
+
+            <p>
+                This is your private DevSolve administration area.
+                Here, you can monitor student ideas, identify school
+                problems, and help organize solutions.
+            </p>
+        </section>
+
+        <h2 class="section-title">Overview</h2>
+
+        <section class="cards">
+
+    <div class="card">
+        <h3>Student Ideas</h3>
+        <div class="number">{{ total_ideas }}</div>
+    </div>
+
+    <div class="card">
+        <h3>Reported Problems</h3>
+        <div class="number">{{ total_problems }}</div>
+    </div>
+
+    <div class="card">
+        <h3>Pending Reports</h3>
+        <div class="number">{{ pending_problems }}</div>
+    </div>
+
+<!-- STUDENT IDEAS SECTION -->
+<section class="coming-soon" id="feedback">
+
+    <h2>Student Ideas</h2>
+
+    <p>Actual ideas and feedback submitted by students.</p>
+
+    {% if ideas %}
+
+        {% for idea in ideas %}
+
+            <div class="card" style="margin-top: 20px;">
+
+                <h3>Student Idea #{{ idea.id }}</h3>
+
+                <p style="line-height: 1.7; margin-bottom: 15px;">
+                    {{ idea.message }}
+                </p>
+<p style="margin: 15px 0;">
+    <strong>Current Status:</strong>
+    {{ idea.status }}
+</p>
+
+<form
+    action="{{ url_for('update_idea_status', idea_id=idea.id) }}"
+    method="POST"
+    style="margin-top: 15px;"
+>
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <label for="idea-status-{{ idea.id }}">
+        Update Status:
+    </label>
+
+    <select
+        name="status"
+        id="idea-status-{{ idea.id }}"
+        required
+        style="padding: 9px; border-radius: 6px;"
+    >
+        <option value="Pending" {% if idea.status == 'Pending' %}selected{% endif %}>
+            Pending
+        </option>
+
+        <option value="Under Review" {% if idea.status == 'Under Review' %}selected{% endif %}>
+            Under Review
+        </option>
+
+        <option value="Accepted" {% if idea.status == 'Accepted' %}selected{% endif %}>
+            Accepted
+        </option>
+
+        <option value="Rejected" {% if idea.status == 'Rejected' %}selected{% endif %}>
+            Rejected
+        </option>
+
+        <option value="Implemented" {% if idea.status == 'Implemented' %}selected{% endif %}>
+            Implemented
+        </option>
+    </select>
+
+    <button type="submit">
+        Save Status
+    </button>
+</form>
+<form
+    action="{{ url_for('delete_student_idea', idea_id=idea.id) }}"
+    method="POST"
+    onsubmit="return confirm('Are you sure you want to delete this student idea? This action cannot be undone.');"
+    style="margin-top: 12px;"
+>
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <button
+        type="submit"
+        style="padding: 9px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;"
+    >
+        Delete Idea
+    </button>
+
+</form>
+                <small>
+                    Submitted: {{ idea.submitted_at }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No student ideas have been submitted yet.</p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- SCHOOL PROBLEMS SECTION -->
+<section class="coming-soon" id="problems">
+
+    <h2>Reported School Problems</h2>
+
+    <p>Actual school problems reported by students.</p>
+
+    {% if problems %}
+
+        {% for problem in problems %}
+
+            <div class="card" style="margin-top: 20px;">
+
+                <h3>Problem #{{ problem.id }}</h3>
+
+                <p style="line-height: 1.7; margin: 15px 0;">
+                    {{ problem.description }}
+                </p>
+
+                <p style="margin: 15px 0;">
+    <strong>Current Status:</strong>
+    {{ problem.status }}
+</p>
+
+<form
+    action="{{ url_for('update_problem_status', problem_id=problem.id) }}"
+    method="POST"
+    style="margin-top: 15px;"
+>
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <label for="status-{{ problem.id }}">
+        Update Status:
+    </label>
+
+    <select
+        name="status"
+        id="status-{{ problem.id }}"
+        required
+        style="padding: 9px; margin: 10px 0; border-radius: 6px;"
+    >
+        <option value="Pending"
+            {% if problem.status == 'Pending' %}selected{% endif %}>
+            Pending
+        </option>
+
+        <option value="In Progress"
+            {% if problem.status == 'In Progress' %}selected{% endif %}>
+            In Progress
+        </option>
+
+        <option value="Solved"
+            {% if problem.status == 'Solved' %}selected{% endif %}>
+            Solved
+        </option>
+    </select>
+
+    <button
+        type="submit"
+        style="padding: 9px 16px; background: #075985; color: white; border: none; border-radius: 6px; cursor: pointer;"
+    >
+        Save Status
+    </button>
+
+</form>
+<form
+    action="{{ url_for('delete_school_problem', problem_id=problem.id) }}"
+    method="POST"
+    onsubmit="return confirm('Are you sure you want to delete this submission? This action cannot be undone.');"
+    style="margin-top: 12px;"
+>
+
+    <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token() }}"
+    >
+
+    <button
+        type="submit"
+        style="padding: 9px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer;"
+    >
+        Delete Problem
+    </button>
+
+</form>
+                <small>
+                    Submitted: {{ problem.submitted_at }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No school problems have been reported yet.</p>
+
+    {% endif %}
+
+</section>
+<!-- MEMBERSHIP APPLICATIONS SECTION -->
+<section class="coming-soon" id="applications">
+
+    <h2>Membership Applications</h2>
+    <div class="card" style="margin-top: 20px; margin-bottom: 25px;">
+
+    <h3>Membership Application Settings</h3>
+
+    <p style="margin-bottom: 15px;">
+        Control when students can submit membership applications.
+    </p>
+
+    <form
+        action="{{ url_for('update_application_settings') }}"
+        method="POST"
+    >
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <label style="display: block; margin-bottom: 12px;">
+            <input
+                type="checkbox"
+                name="applications_open"
+                value="1"
+                {% if applications_open == '1' %}checked{% endif %}
+            >
+            Accept membership applications
+        </label>
+
+        <label for="application_deadline" style="display: block; margin-bottom: 8px;">
+            Application deadline:
+        </label>
+
+        <input
+            type="date"
+            id="application_deadline"
+            name="application_deadline"
+            value="{{ application_deadline }}"
+            style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 15px;"
+        >
+
+        <button
+            type="submit"
+            style="display: block; padding: 11px 18px; background: #075985; color: white; border: none; border-radius: 6px; cursor: pointer;"
+        >
+            Save Application Settings
+        </button>
+
+    </form>
+
+</div>
+
+    <p>Review applications submitted by students who want to join DevSolve.</p>
+
+    {% if applications %}
+
+        {% for application in applications %}
+
+            <div class="card" style="margin-top: 20px;">
+
+                <h3>Application #{{ application.id }}</h3>
+
+                <p style="margin: 12px 0;">
+                    <strong>Full Name:</strong> {{ application.full_name }}
+                </p>
+
+                <p style="margin: 12px 0;">
+                    <strong>Grade:</strong> {{ application.grade_section }}
+                </p>
+
+                <p style="margin: 12px 0;">
+                    <strong>Phone:</strong> {{ application.phone }}
+                </p>
+
+                <p style="margin: 12px 0;">
+                    <strong>Email:</strong> {{ application.email }}
+                </p>
+                <p style="margin: 12px 0;">
+    <strong>Selected Role:</strong>
+    {{ application.role }}
+</p>
+
+<p style="margin: 12px 0; line-height: 1.7;">
+    <strong>Why They Chose This Role:</strong><br>
+    {{ application.role_reason }}
+</p>
+
+                <p style="margin: 12px 0; line-height: 1.7;">
+                    <strong>Motivation:</strong><br>
+                    {{ application.motivation }}
+                </p>
+
+                <p style="margin: 12px 0;">
+                    <strong>Current Status:</strong>
+                    {{ application.status }}
+                </p>
+
+                <form
+                    action="{{ url_for('update_application_status', application_id=application.id) }}"
+                    method="POST"
+                    style="margin-top: 15px;"
+                >
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <label for="application-status-{{ application.id }}">
+                        Update Application Status:
+                    </label>
+
+                    <select
+                        name="status"
+                        id="application-status-{{ application.id }}"
+                        required
+                        style="padding: 9px; margin: 10px 0; border-radius: 6px;"
+                    >
+
+                        <option value="Pending"
+                            {% if application.status == 'Pending' %}selected{% endif %}>
+                            Pending
+                        </option>
+
+                        <option value="Accepted"
+                            {% if application.status == 'Accepted' %}selected{% endif %}>
+                            Accepted
+                        </option>
+
+                        <option value="Rejected"
+                            {% if application.status == 'Rejected' %}selected{% endif %}>
+                            Rejected
+                        </option>
+
+                    </select>
+
+                    <button
+                        type="submit"
+                        style="padding: 9px 16px; background: #075985; color: white; border: none; border-radius: 6px; cursor: pointer;"
+                    >
+                        Save Status
+                    </button>
+
+                </form>
+
+                <small>
+                    Submitted: {{ application.submitted_at }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No membership applications have been submitted yet.</p>
+
+    {% endif %}
+
+</section>
+<!-- NEWS MANAGEMENT SECTION -->
+<section class="coming-soon" id="news">
+    <h2>News Management</h2>
+
+    <div class="card">
+        <h3>Create a News Announcement</h3>
+
+        <form action="{{ url_for('create_news') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label>News Title</label>
+            <input type="text" name="title" maxlength="150" required>
+
+            <label>News Content</label>
+            <textarea name="content" maxlength="3000" rows="5" required></textarea>
+
+            <button type="submit">Create Announcement</button>
+        </form>
+    </div>
+
+    <h3>Existing Announcements</h3>
+
+    {% for news in news_items %}
+        <div class="card" style="margin-top: 20px;">
+            <h3>{{ news.title }}</h3>
+
+            <p>
+                Status:
+                {% if news.published %}
+                    Published
+                {% else %}
+                    Unpublished
+                {% endif %}
+            </p>
+
+            <form action="{{ url_for('edit_news', news_id=news.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label>Edit Title</label>
+                <input type="text" name="title" value="{{ news.title }}" maxlength="150" required>
+
+                <label>Edit Content</label>
+                <textarea name="content" maxlength="3000" rows="4" required>{{ news.content }}</textarea>
+
+                <button type="submit">Save Changes</button>
+            </form>
+
+            <form action="{{ url_for('toggle_news_publication', news_id=news.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit">
+                    {% if news.published %}Unpublish{% else %}Publish{% endif %}
+                </button>
+            </form>
+
+            <form action="{{ url_for('delete_news', news_id=news.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit">Delete Announcement</button>
+            </form>
+        </div>
+    {% else %}
+        <p>No news announcements have been created yet.</p>
+    {% endfor %}
+</section>
+<!-- PROJECTS MANAGEMENT SECTION -->
+<section class="coming-soon" id="projects">
+    <h2>Projects Management</h2>
+
+    <div class="card">
+        <h3>Create a New Project</h3>
+
+        <form action="{{ url_for('create_project') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label>Project Title</label>
+            <input type="text" name="title" maxlength="150" required>
+
+            <label>Project Description</label>
+            <textarea name="description" maxlength="3000" rows="5" required></textarea>
+
+            <button type="submit">Create Project</button>
+        </form>
+    </div>
+
+    <h3>Existing Projects</h3>
+
+    {% for project in projects %}
+        <div class="card" style="margin-top: 20px;">
+            <h3>{{ project.title }}</h3>
+
+            <p>
+                Status: {{ project.status }}
+            </p>
+
+            <p>
+                Publication:
+                {% if project.published %}
+                    Published
+                {% else %}
+                    Unpublished
+                {% endif %}
+            </p>
+
+            <form action="{{ url_for('edit_project', project_id=project.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label>Edit Project Title</label>
+                <input type="text" name="title" value="{{ project.title }}" maxlength="150" required>
+
+                <label>Edit Project Description</label>
+                <textarea name="description" maxlength="3000" rows="4" required>{{ project.description }}</textarea>
+
+                <label>Project Status</label>
+                <select name="status" required>
+                    <option value="Planning" {% if project.status == 'Planning' %}selected{% endif %}>Planning</option>
+                    <option value="In Progress" {% if project.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if project.status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+
+                <button type="submit">Save Changes</button>
+            </form>
+
+            <form action="{{ url_for('toggle_project_publication', project_id=project.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <button type="submit">
+                    {% if project.published %}Unpublish Project{% else %}Publish Project{% endif %}
+                </button>
+            </form>
+
+            <form action="{{ url_for('delete_project', project_id=project.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <button type="submit">Delete Project</button>
+            </form>
+        </div>
+    {% else %}
+        <p>No projects have been created yet.</p>
+    {% endfor %}
+</section>
+    </main>
+
+</body>
+</html>
