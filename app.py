@@ -1,6 +1,5 @@
 import os
 import re
-import sqlite3
 from pathlib import Path
 from functools import wraps
 
@@ -27,127 +26,67 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 csrf = CSRFProtect(app)
 
-# Keep the database in the instance folder.
-INSTANCE_DIR = BASE_DIR / "instance"
-INSTANCE_DIR.mkdir(exist_ok=True)
-DATABASE = INSTANCE_DIR / "devsolve.sqlite3"
+
+
+
+import psycopg
+from psycopg.rows import dict_row
+
+
+class Database:
+    def __init__(self, connection):
+        self.connection = connection
+
+    def execute(self, query, params=()):
+        query = query.replace("?", "%s")
+        return self.connection.execute(query, params)
+
+    def executescript(self, script):
+        for statement in script.split(";"):
+            if statement.strip():
+                self.connection.execute(statement)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        try:
+            if exc_type:
+                self.connection.rollback()
+            else:
+                self.connection.commit()
+        finally:
+            self.connection.close()
 
 
 def get_db():
-    connection = sqlite3.connect(DATABASE)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    return connection
+    database_url = os.environ.get("DATABASE_URL")
+
+    if not database_url:
+        raise RuntimeError("DATABASE_URL is missing!")
+
+    connection = psycopg.connect(
+        database_url,
+        row_factory=dict_row
+    )
+
+    return Database(connection)
 
 
 def init_db():
     with get_db() as db:
-        db.executescript("""
-            CREATE TABLE IF NOT EXISTS admins (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL UNIQUE COLLATE NOCASE,
-                password_hash TEXT NOT NULL,
-                role TEXT NOT NULL DEFAULT 'admin',
-                active INTEGER NOT NULL DEFAULT 1,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS applications (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                full_name TEXT NOT NULL,
-                phone TEXT NOT NULL,
-                grade_section TEXT NOT NULL,
-                email TEXT NOT NULL,
-                role TEXT NOT NULL,
-                role_reason TEXT NOT NULL,
-                motivation TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'Pending',
-                submitted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                reviewed_by INTEGER,
-                FOREIGN KEY (reviewed_by) REFERENCES admins(id)
-            );
-
-            CREATE TABLE IF NOT EXISTS news (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                content TEXT NOT NULL,
-                published INTEGER NOT NULL DEFAULT 0,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS projects (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                description TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'Planning',
-                published INTEGER NOT NULL DEFAULT 0,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS settings (
-                setting_key TEXT PRIMARY KEY,
-                setting_value TEXT NOT NULL
-            );
-
-            CREATE TABLE IF NOT EXISTS feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                message TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'Pending',
-                submitted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS problem_reports (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                category TEXT NOT NULL,
-                description TEXT NOT NULL,
-                location TEXT,
-                status TEXT NOT NULL DEFAULT 'Pending',
-                submitted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-
-            CREATE TABLE IF NOT EXISTS school_problems (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                category TEXT NOT NULL,
-                description TEXT NOT NULL,
-                status TEXT NOT NULL DEFAULT 'Pending',
-                submitted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
-        # Default membership application settings
         db.execute("""
-            INSERT OR IGNORE INTO settings
-            (setting_key, setting_value)
-            VALUES ('applications_open', '1')
-        """)
+            INSERT INTO settings (setting_key, setting_value)
+            VALUES (%s, %s)
+            ON CONFLICT (setting_key) DO NOTHING
+        """, ("applications_open", "1"))
 
         db.execute("""
-            INSERT OR IGNORE INTO settings
-            (setting_key, setting_value)
-            VALUES ('application_deadline', '')
-        """)
+            INSERT INTO settings (setting_key, setting_value)
+            VALUES (%s, %s)
+            ON CONFLICT (setting_key) DO NOTHING
+        """, ("application_deadline", ""))
 
-        # Safely add new membership fields to existing databases
-        application_columns = {
-            row[1]
-            for row in db.execute(
-                "PRAGMA table_info(applications)"
-            ).fetchall()
-        }
-
-        if "role" not in application_columns:
-            db.execute("""
-                ALTER TABLE applications
-                ADD COLUMN role TEXT NOT NULL DEFAULT ''
-            """)
-
-        if "role_reason" not in application_columns:
-            db.execute("""
-                ALTER TABLE applications
-                ADD COLUMN role_reason TEXT NOT NULL DEFAULT ''
-            """)
 
 # Initialize the database when the application starts.
 init_db()
@@ -163,7 +102,8 @@ def home():
                 "SELECT setting_key, setting_value FROM settings"
             ).fetchall()
         }
-         # Retrieve published news for the public website
+
+        # Retrieve published news for the public website
         news_items = db.execute(
             """
             SELECT id, title, content, created_at
@@ -172,15 +112,16 @@ def home():
             ORDER BY created_at DESC
             """
         ).fetchall()
+
         # Retrieve published projects
         projects = db.execute(
-    """
-    SELECT id, title, description, status, created_at
-    FROM projects
-    WHERE published = 1
-    ORDER BY created_at DESC
-    """
-).fetchall()
+            """
+            SELECT id, title, description, status, created_at
+            FROM projects
+            WHERE published = 1
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
 
         applications_open = settings.get("applications_open", "1")
         deadline = settings.get("application_deadline", "")
@@ -189,21 +130,26 @@ def home():
 
         if deadline:
             deadline_passed = db.execute(
-                "SELECT date('now', '+3 hours') > date(?)",
+                """
+                SELECT (
+                    (CURRENT_TIMESTAMP AT TIME ZONE 'Africa/Addis_Ababa')::date
+                    > %s::date
+                ) AS deadline_passed
+                """,
                 (deadline,)
-            ).fetchone()[0]
+            ).fetchone()["deadline_passed"]
 
     applications_available = (
         applications_open == "1" and not deadline_passed
     )
 
     return render_template(
-    "index.html",
-    applications_available=applications_available,
-    application_deadline=deadline,
-    news_items=news_items,
-    projects=projects
-)
+        "index.html",
+        applications_available=applications_available,
+        application_deadline=deadline,
+        news_items=news_items,
+        projects=projects
+    )
 
 @app.route("/health")
 def health():
@@ -286,36 +232,36 @@ def admin_dashboard():
 
         # Count student ideas
         total_ideas = db.execute(
-            "SELECT COUNT(*) FROM feedback"
-        ).fetchone()[0]
+            "SELECT COUNT(*) AS count FROM feedback"
+        ).fetchone()["count"]
 
         # Count reported problems
         total_problems = db.execute(
-            "SELECT COUNT(*) FROM school_problems"
-        ).fetchone()[0]
+            "SELECT COUNT(*) AS count FROM school_problems"
+        ).fetchone()["count"]
 
         # Count pending problems
         pending_problems = db.execute(
             """
-            SELECT COUNT(*)
+            SELECT COUNT(*) AS count
             FROM school_problems
             WHERE status = 'Pending'
             """
-        ).fetchone()[0]
+        ).fetchone()["count"]
 
         # Count membership applications
         total_applications = db.execute(
-            "SELECT COUNT(*) FROM applications"
-        ).fetchone()[0]
+            "SELECT COUNT(*) AS count FROM applications"
+        ).fetchone()["count"]
 
         # Count pending applications
         pending_applications = db.execute(
             """
-            SELECT COUNT(*)
+            SELECT COUNT(*) AS count
             FROM applications
             WHERE status = 'Pending'
             """
-        ).fetchone()[0]
+        ).fetchone()["count"]
 
         # Retrieve student ideas
         ideas = db.execute(
@@ -334,7 +280,8 @@ def admin_dashboard():
             ORDER BY submitted_at DESC
             """
         ).fetchall()
-                # Retrieve projects
+
+        # Retrieve projects
         projects = db.execute(
             """
             SELECT id, title, description, status, published,
@@ -343,14 +290,15 @@ def admin_dashboard():
             ORDER BY created_at DESC
             """
         ).fetchall()
+
         # Retrieve news announcements
         news_items = db.execute(
-    """
-    SELECT id, title, content, published, created_at, updated_at
-    FROM news
-    ORDER BY created_at DESC
-    """
-).fetchall()
+            """
+            SELECT id, title, content, published, created_at, updated_at
+            FROM news
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
 
         # Retrieve membership applications
         applications = db.execute(
@@ -362,7 +310,8 @@ def admin_dashboard():
             ORDER BY submitted_at DESC
             """
         ).fetchall()
-         # Retrieve membership application settings
+
+        # Retrieve membership application settings
         application_settings = {
             row["setting_key"]: row["setting_value"]
             for row in db.execute(
@@ -381,7 +330,7 @@ def admin_dashboard():
         problems=problems,
         news_items=news_items,
         projects=projects,
-         applications=applications,
+        applications=applications,
         applications_open=application_settings.get("applications_open", "1"),
         application_deadline=application_settings.get("application_deadline", "")
     )
@@ -910,7 +859,7 @@ def submit_feedback():
                 (message,)
             )
 
-    except sqlite3.Error:
+    except psycopg.Error:
         app.logger.exception("Could not save feedback")
         return feedback_response(
             False,
@@ -955,12 +904,12 @@ def submit_problem():
 
     try:
         with get_db() as db:
-           db.execute(
-    "INSERT INTO school_problems (category, description) VALUES (?, ?)",
-    ("General", description)
-)
+            db.execute(
+                "INSERT INTO school_problems (category, description) VALUES (?, ?)",
+                ("General", description)
+            )
 
-    except sqlite3.Error:
+    except psycopg.Error:
         app.logger.exception("Could not save school problem")
         return problem_response(
             False,
@@ -995,7 +944,8 @@ def submit_application():
 
         flash(message)
         return redirect(url_for("home") + "#join")
-     # Check whether membership applications are open
+
+    # Check whether membership applications are open
     with get_db() as db:
         settings = {
             row["setting_key"]: row["setting_value"]
@@ -1011,9 +961,14 @@ def submit_application():
 
         if deadline:
             deadline_passed = db.execute(
-                "SELECT date('now', '+3 hours') > date(?)",
+                """
+                SELECT (
+                    (CURRENT_TIMESTAMP AT TIME ZONE 'Africa/Addis_Ababa')::date
+                    > %s::date
+                ) AS deadline_passed
+                """,
                 (deadline,)
-            ).fetchone()[0]
+            ).fetchone()["deadline_passed"]
 
     if applications_open != "1" or deadline_passed:
         return application_response(
@@ -1137,7 +1092,7 @@ def submit_application():
                 )
             )
 
-    except sqlite3.Error:
+    except psycopg.Error:
         app.logger.exception("Could not save membership application")
         return application_response(
             False,
@@ -1149,6 +1104,5 @@ def submit_application():
         True,
         "Application submitted successfully! Thank you for applying to DevSolve Community. Your application is now under review. You will receive the result within one week from the date you applied. Please remember to check both your email inbox and spam/junk folder for our response."
     )
-
 if __name__ == "__main__":
     app.run(debug=os.environ.get("APP_ENV") == "development")
